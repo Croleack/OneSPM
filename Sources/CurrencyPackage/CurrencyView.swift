@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CurrencyView: UIView {
+public class CurrencyView: UIView {
     
     private let titleLabel: UILabel = {
         let label = UILabel()

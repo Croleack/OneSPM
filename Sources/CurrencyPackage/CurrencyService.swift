@@ -7,7 +7,7 @@
 
 import Foundation
 
-class CurrencyService {
+public class CurrencyService {
     private let url = URL(string: "http://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/currency")!
     private let token = "ccf229a1b77f6fd04dd326b099025fc2db04cfe6"
     
