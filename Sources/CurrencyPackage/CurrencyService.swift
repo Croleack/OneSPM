@@ -8,18 +8,11 @@
 import Foundation
 
 public class CurrencyService {
-    private let url = URL(string: "http://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/currency")!
-    private let token = "ccf229a1b77f6fd04dd326b099025fc2db04cfe6"
+    private let url = URL(string: "https://api.ipify.org?format=json")!
     
-    func fetchCurrencies(completion: @escaping (Result<[CurrencyDetails], Error>) -> Void) {
+    func fetchIP(completion: @escaping (Result<String, Error>) -> Void) {
         var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("Token \(token)", forHTTPHeaderField: "Authorization")
-        
-        // Sending empty JSON body as request body
-        request.httpBody = "{}".data(using: .utf8)
+        request.httpMethod = "GET"
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
@@ -28,13 +21,13 @@ public class CurrencyService {
             }
             
             guard let data = data else {
+                completion(.failure(NSError(domain: "DataError", code: -1, userInfo: nil)))
                 return
             }
             
             do {
-                let currencyData = try JSONDecoder().decode(CurrencyData.self, from: data)
-                let currencyDetails = currencyData.suggestions.map { $0.data }
-                completion(.success(currencyDetails))
+                let ipResponse = try JSONDecoder().decode(IPResponse.self, from: data)
+                completion(.success(ipResponse.ip))
             } catch {
                 completion(.failure(error))
             }
@@ -42,4 +35,9 @@ public class CurrencyService {
         
         task.resume()
     }
+}
+
+// MARK: - IPResponse
+struct IPResponse: Codable {
+    let ip: String
 }

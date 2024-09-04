@@ -11,7 +11,7 @@ public class CurrencyView: UIView {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Рубли по стандарту ISO 4217"
+        label.text = "Ваш текущий IP-адрес"
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textAlignment = .center
         return label
@@ -29,13 +29,13 @@ public class CurrencyView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        fetchCurrencyData()
+        fetchIPData()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupView()
-        fetchCurrencyData()
+        fetchIPData()
     }
     
     private func setupView() {
@@ -47,27 +47,26 @@ public class CurrencyView: UIView {
         
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             
             textView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
-            textView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            textView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            textView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            textView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
             textView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
         ])
     }
     
-    private func fetchCurrencyData() {
-        currencyService.fetchCurrencies { [weak self] result in
+    private func fetchIPData() {
+        currencyService.fetchIP { [weak self] result in
             switch result {
-            case .success(let currencies):
-                let text = currencies.map { "\($0.name) (\($0.strcode)) - \($0.country)" }.joined(separator: "\n")
+            case .success(let ip):
                 DispatchQueue.main.async {
-                    self?.textView.text = text
+                    self?.textView.text = "Ваш IP: \(ip)"
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self?.textView.text = "Ошибка загрузки данных: \(error.localizedDescription)"
+                    self?.textView.text = "Ошибка загрузки IP: \(error.localizedDescription)"
                 }
             }
         }
