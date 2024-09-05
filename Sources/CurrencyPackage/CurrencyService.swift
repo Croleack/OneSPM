@@ -8,9 +8,14 @@
 import Foundation
 
 public class CurrencyService {
-    private let url = URL(string: "https://api.ipify.org?format=json")!
-    
+    private let urlString = "https://api.ipify.org?format=json"
+
     func fetchIP(completion: @escaping (Result<String, Error>) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
+            return
+        }
+        
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
