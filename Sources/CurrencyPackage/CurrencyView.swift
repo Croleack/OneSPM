@@ -8,10 +8,10 @@
 import UIKit
 
 public class CurrencyView: UIView {
-    
+    //MARK: - Variables
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "IP Mini-App"
+        label.text = "Узнай свой IP"
         label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textColor = .white
         label.textAlignment = .center

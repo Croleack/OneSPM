@@ -8,41 +8,22 @@
 import Foundation
 
 public class CurrencyService {
+    
+    public init() { }
+    
     private let urlString = "https://api.ipify.org?format=json"
-
-    func fetchIP(completion: @escaping (Result<String, Error>) -> Void) {
+    
+    public func fetchIP() async throws -> String {
         guard let url = URL(string: urlString) else {
-            completion(.failure(NSError(domain: "Invalid URL", code: -1, userInfo: nil)))
-            return
+            throw NSError(domain: "Invalid URL", code: -1, userInfo: nil)
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let data = data else {
-                completion(.failure(NSError(domain: "DataError", code: -1, userInfo: nil)))
-                return
-            }
-            
-            do {
-                let ipResponse = try JSONDecoder().decode(IPResponse.self, from: data)
-                completion(.success(ipResponse.ip))
-            } catch {
-                completion(.failure(error))
-            }
-        }
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let ipResponse = try JSONDecoder().decode(IPResponse.self, from: data)
         
-        task.resume()
+        return ipResponse.ip
     }
-}
-
-// MARK: - IPResponse
-struct IPResponse: Codable {
-    let ip: String
 }
